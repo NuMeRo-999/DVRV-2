@@ -1,0 +1,3 @@
+repository "3d Prueba/Animaciones2D@1375444080659@cloud"
+  path "/"
+    smartbranch "/main"

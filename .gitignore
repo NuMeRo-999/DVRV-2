@@ -1,0 +1,71 @@
+# Ignorar directorios y archivos de Unity generados automáticamente
+**/Library/
+**/Temp/
+**/Obj/
+**/Build/
+**/Builds/
+**/Logs/
+**/UserSettings/
+
+# Capturas de memoria que pueden ser excesivas
+**/MemoryCaptures/
+
+# Grabaciones que pueden ser excesivas
+**/Recordings/
+
+# Ignorar el plugin de herramientas de la Asset Store
+# **/Assets/AssetStoreTools*
+
+# Plugin autogenerado de Jetbrains Rider
+**/Assets/Plugins/Editor/JetBrains*
+
+# Directorio de caché de Visual Studio
+.vs/
+
+# Directorio de caché de Gradle
+.gradle/
+
+# Archivos de solución y proyecto autogenerados de VS/MD/Consulo
+**/ExportedObj/
+**/.consulo/
+**/*.csproj
+**/*.unityproj
+**/*.sln
+**/*.suo
+**/*.tmp
+**/*.user
+**/*.userprefs
+**/*.pidb
+**/*.booproj
+**/*.svd
+**/*.pdb
+**/*.mdb
+**/*.opendb
+**/*.VC.db
+
+# Archivos meta generados por Unity3D
+**/*.pidb.meta
+**/*.pdb.meta
+**/*.mdb.meta
+
+# Archivos generados por Unity3D en informes de fallos
+**/sysinfo.txt
+
+# Ignorar builds
+**/*.apk
+**/*.aab
+**/*.unitypackage
+**/*.app
+
+# Archivos generados por Crashlytics
+**/crashlytics-build.properties
+
+# Addressables empaquetados
+**/Assets/AddressableAssetsData/*/*.bin*
+
+# Recursos temporales autogenerados de Android
+**/Assets/StreamingAssets/aa.meta
+**/Assets/StreamingAssets/aa/*
+
+# Vuforia package
+Realidad Virtual y Aumentada/*/Packages/com.ptc.vuforia.engine-10.25.4.tgz
