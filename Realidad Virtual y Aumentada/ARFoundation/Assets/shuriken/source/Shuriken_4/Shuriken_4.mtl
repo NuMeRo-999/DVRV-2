@@ -1,0 +1,14 @@
+# Blender 4.3.0 Alpha MTL File: 'Shuriken_4.blend'
+# www.blender.org
+
+newmtl M_Shuriken4
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Shuriken4_Color.jpg
+map_Ns Shuriken4_Roughness.jpg
+map_refl Shuriken4_Metallic.jpg
+map_Bump -bm 1.000000 Shuriken4_Normal.jpg

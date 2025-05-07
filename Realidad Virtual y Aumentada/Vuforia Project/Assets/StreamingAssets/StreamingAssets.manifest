@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 298359235
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: earthbundle
+      Dependencies: {}

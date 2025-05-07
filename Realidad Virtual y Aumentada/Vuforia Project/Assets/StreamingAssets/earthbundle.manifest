@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+CRC: 804551771
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 175dd2dc4c1b32cd79f6891471562bde
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 0dcad06d2b2356e9c4fa7cbebd15e3e6
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 175dd2dc4c1b32cd79f6891471562bde
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 135
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Solar System/Prefabs/Jupiter.prefab
+- Assets/Solar System/Prefabs/Earth.prefab
+Dependencies: []

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>GeoAR.js demo</title>
+  <script src='https://aframe.io/releases/0.9.2/aframe.min.js'></script>
+  <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+  <script>
+    THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/'
+  </script>
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+  <a-scene vr-mode-ui="enabled: false" embedded
+    arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+
+    <a-entity gltf-model="./magnemite/scene.gltf" rotation="0 180 0" scale="0.10 0.10 0.10" gps-entity-place="longitude: 37.1922093127024; latitude: -3.617279260948165;" animation-mixer/>
+    <a-entity gltf-model="./dragonite/scene.gltf" rotation="0 180 0" scale="0.10 0.10 0.10" gps-entity-place="longitude: 37.192052244306495; latitude: -3.617068799311105;" animation-mixer/>
+    <a-entity gltf-model="./articuno/scene.gltf" rotation="0 180 0" scale="0.10 0.10 0.10" gps-entity-place="longitude: 37.19187861782165; latitude: -3.61685570187555;" animation-mixer/>
+
+    <a-entity gltf-model="./articuno/scene.gltf" rotation="0 180 0" scale="0.10 0.10 0.10" gps-entity-place="longitude: 37.19230667142378; latitude: -3.61664651226422;" animation-mixer/>
+    
+    <a-camera gps-camera rotation-reader></a-camera>
+  </a-scene>
+</body>
+
+</html>
