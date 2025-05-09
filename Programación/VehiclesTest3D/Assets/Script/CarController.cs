@@ -22,6 +22,11 @@ public class CarController : MonoBehaviour
     public WheelCollider backRightWheelCollider;
     public GameObject backRightWheel;
 
+    public ParticleSystem RLWParticleSystem;
+    public ParticleSystem RRWParticleSystem;
+    public TrailRenderer RLWTireSkid;
+    public TrailRenderer RRWTireSkid;
+
     private Rigidbody carRB;
 
     [Header("Parameters")]
@@ -92,11 +97,19 @@ public class CarController : MonoBehaviour
         {
             skidSound.Play();
             isSkidding = true;
+            RLWParticleSystem.Play();
+            RRWParticleSystem.Play();
+            RLWTireSkid.emitting = true;
+            RRWTireSkid.emitting = true;
         }
         else if (!skidding && isSkidding)
         {
             skidSound.Stop();
             isSkidding = false;
+            RLWParticleSystem.Stop();
+            RRWParticleSystem.Stop();
+            RLWTireSkid.emitting = false;
+            RRWTireSkid.emitting = false;
         }
     }
 
