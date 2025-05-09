@@ -22,8 +22,7 @@ public class CarController : MonoBehaviour
     public WheelCollider backRightWheelCollider;
     public GameObject backRightWheel;
 
-
-    private Rigidbody carRB;    
+    private Rigidbody carRB;
 
     [Header("Parameters")]
     public float maxSteerAngle = 30;
@@ -38,6 +37,12 @@ public class CarController : MonoBehaviour
 
     private PlayerInput playerInput;
 
+    public AudioSource engineSound;
+    public AudioSource hornSound;
+    public AudioSource skidSound; // Nuevo sonido para el derrape
+
+    private bool isSkidding = false; // Para evitar reproducir el sonido repetidamente
+
     void Start()
     {
         carRB = GetComponent<Rigidbody>();
@@ -49,6 +54,8 @@ public class CarController : MonoBehaviour
             playerInput.actions["Stop"].performed += OnsStop;
             playerInput.actions["Stop"].canceled += OnNoStop;
         }
+
+        ReduceWheelFriction(1.5f, 1.5f);
     }
 
     void FixedUpdate()
@@ -57,6 +64,40 @@ public class CarController : MonoBehaviour
         UpdateWheelPoses();
         Steer();
         Brake();
+        UpdateEngineSound();
+        CheckForSkid(); // Llamada al método para comprobar el derrape
+    }
+
+    private void UpdateEngineSound()
+    {
+        if (engineSound != null)
+        {
+            float normalizedSpeed = Mathf.Clamp01(carRB.linearVelocity.magnitude / maxSpeed);
+            engineSound.pitch = Mathf.Lerp(0.8f, 2.0f, normalizedSpeed);
+        }
+    }
+
+    private void CheckForSkid()
+    {
+        WheelHit hit;
+        bool skidding = false;
+
+        // Comprobar si alguna rueda está derrapando
+        if (frontLeftWheelCollider.GetGroundHit(out hit) && Mathf.Abs(hit.sidewaysSlip) > 0.4f) skidding = true;
+        if (frontRightWheelCollider.GetGroundHit(out hit) && Mathf.Abs(hit.sidewaysSlip) > 0.4f) skidding = true;
+        if (backLeftWheelCollider.GetGroundHit(out hit) && Mathf.Abs(hit.sidewaysSlip) > 0.4f) skidding = true;
+        if (backRightWheelCollider.GetGroundHit(out hit) && Mathf.Abs(hit.sidewaysSlip) > 0.4f) skidding = true;
+
+        if (skidding && !isSkidding)
+        {
+            skidSound.Play();
+            isSkidding = true;
+        }
+        else if (!skidding && isSkidding)
+        {
+            skidSound.Stop();
+            isSkidding = false;
+        }
     }
 
     public void OnMove(InputValue value)
@@ -80,18 +121,17 @@ public class CarController : MonoBehaviour
     {
         brake = 0;
         speed = 0;
-        carOn = false;
     }
 
     public void OnStart(InputValue value)
     {
         if (carOn && carRB.linearVelocity.magnitude < 0.1f) carOn = false;
-        else if (!carOn) carOn = true;
+        else if (!carOn) carOn = true; engineSound.Play();
     }
 
     private void Acelerate()
     {
-        if(carRB.linearVelocity.magnitude * 4 > maxSpeed)
+        if (carRB.linearVelocity.magnitude * 4 > maxSpeed)
         {
             frontLeftWheelCollider.motorTorque = 0;
             frontRightWheelCollider.motorTorque = 0;
@@ -124,13 +164,13 @@ public class CarController : MonoBehaviour
     {
         m_steeringAngle = maxSteerAngle * m_horizontalInput;
 
-        frontLeftWheelCollider.steerAngle = m_steeringAngle;
-        frontRightWheelCollider.steerAngle = m_steeringAngle;
+        frontLeftWheelCollider.steerAngle = Mathf.Lerp(frontLeftWheelCollider.steerAngle, m_steeringAngle, Time.deltaTime * 5);
+        frontRightWheelCollider.steerAngle = Mathf.Lerp(frontRightWheelCollider.steerAngle, m_steeringAngle, Time.deltaTime * 5);
     }
 
     private void Brake()
     {
-        if(m_verticalInput == 0)
+        if (m_verticalInput == 0)
         {
             frontLeftWheelCollider.brakeTorque = brake;
             frontRightWheelCollider.brakeTorque = brake;
@@ -140,6 +180,41 @@ public class CarController : MonoBehaviour
         else
         {
             frontLeftWheelCollider.brakeTorque = 0;
+            frontRightWheelCollider.brakeTorque = 0;
+            backLeftWheelCollider.brakeTorque = 0;
+            backRightWheelCollider.brakeTorque = 0;
+        }
+    }
+
+    private void ReduceWheelFriction(float frictionFront, float frictionBack)
+    {
+        WheelCollider[] wheelColliders = { frontLeftWheelCollider, frontRightWheelCollider, backLeftWheelCollider, backRightWheelCollider };
+
+        foreach (WheelCollider wheelCollider in wheelColliders)
+        {
+            WheelFrictionCurve frictionCurve = wheelCollider.forwardFriction;
+            frictionCurve.extremumSlip = 1f;
+            frictionCurve.extremumValue = frictionFront;
+            frictionCurve.asymptoteSlip = 2f;
+            frictionCurve.asymptoteValue = frictionFront * 0.5f;
+            frictionCurve.stiffness = frictionFront;
+            wheelCollider.forwardFriction = frictionCurve;
+
+            frictionCurve = wheelCollider.sidewaysFriction;
+            frictionCurve.extremumSlip = 1f;
+            frictionCurve.extremumValue = frictionBack;
+            frictionCurve.asymptoteSlip = 2f;
+            frictionCurve.asymptoteValue = frictionBack * 0.5f;
+            frictionCurve.stiffness = frictionBack;
+            wheelCollider.sidewaysFriction = frictionCurve;
+        }
+    }
+
+    public void OnInteract(InputValue value)
+    {
+        if (carOn)
+        {
+            hornSound.Play();
         }
     }
 }
