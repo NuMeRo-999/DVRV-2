@@ -8,13 +8,13 @@ public class EnemyAI : MonoBehaviour
     public float patrolSpeed = 2.5f;
     public float runSpeed = 5.0f;
     public float waitTimeAtPoint = 1f;
-    public float reachThreshold = 0.1f;
+    public float reachThreshold = 2f;
 
     [Header("Player Detection")]
     public float detectionRange = 5f;
     public float attackRange = 1.5f;
     public LayerMask playerLayer;
-    public LayerMask groundLayer; // Capa para el suelo/platforms
+    public LayerMask groundLayer;
 
     [Header("Attack Settings")]
     public int attackDamage = 10;
@@ -28,6 +28,7 @@ public class EnemyAI : MonoBehaviour
     private MonsterController monsterController;
     private PixelMonster pixelMonster;
     private Transform player;
+    private PlayerHealth playerHealth;
     private int currentPatrolIndex = 0;
     private float waitTimer = 0f;
     private float attackTimer = 0f;
@@ -47,18 +48,22 @@ public class EnemyAI : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (player != null)
+        {
+            playerHealth = player.GetComponent<PlayerHealth>();
+        }
     }
 
     private void Update()
     {
-        if (pixelMonster.IsDead)
+        if (pixelMonster.IsDead || playerHealth == null || playerHealth.character.IsDead)
         {
             monsterController.inputMove = Vector2.zero;
+            currentState = EnemyState.Patrolling; // Regresa al estado de patrulla si el jugador está muerto
             return;
         }
 
-        // Verificar si está en el suelo
         CheckGrounded();
 
         attackTimer -= Time.deltaTime;
@@ -83,7 +88,6 @@ public class EnemyAI : MonoBehaviour
 
     private void CheckGrounded()
     {
-        // Crear un pequeño boxcast debajo del enemigo para detectar suelo
         Vector2 boxSize = new Vector2(enemyCollider.bounds.size.x * 0.9f, 0.1f);
         Vector2 boxCenter = new Vector2(enemyCollider.bounds.center.x, enemyCollider.bounds.min.y);
 
@@ -101,14 +105,12 @@ public class EnemyAI : MonoBehaviour
 
     private void PatrolBehavior()
     {
-        // Verificar si hay puntos de patrulla
         if (patrolPoints.Length == 0 || !isGrounded)
         {
             monsterController.inputMove = Vector2.zero;
             return;
         }
 
-        // Manejar el tiempo de espera en cada punto
         if (isWaiting)
         {
             monsterController.inputMove = Vector2.zero;
@@ -118,14 +120,11 @@ public class EnemyAI : MonoBehaviour
             {
                 isWaiting = false;
                 waitTimer = 0f;
-
-                // Avanzar al siguiente punto (con bucle circular)
                 currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
             }
             return;
         }
 
-        // Calcular dirección y distancia al punto actual
         Vector2 direction = patrolPoints[currentPatrolIndex].position - transform.position;
         float distance = direction.magnitude;
 
@@ -136,18 +135,15 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // Normalizar dirección y mover al enemigo
         direction.Normalize();
         monsterController.inputMove = new Vector2(direction.x, 0);
-        monsterController.inputMoveModifier = false; // Usar velocidad de patrulla
-
-        // Establecer dirección de mirada
+        monsterController.inputMoveModifier = false;
         pixelMonster.Facing = direction.x > 0 ? 1 : -1;
     }
 
     private void ChaseBehavior()
     {
-        if (player == null)
+        if (player == null || playerHealth.character.IsDead)
         {
             currentState = EnemyState.Patrolling;
             return;
@@ -156,26 +152,23 @@ public class EnemyAI : MonoBehaviour
         Vector2 direction = player.position - transform.position;
         float distance = direction.magnitude;
 
-        // Cambiado a <= attackRange para asegurar la transición
         if (distance <= attackRange)
         {
             currentState = EnemyState.Attacking;
             monsterController.inputMove = Vector2.zero;
-            attackTimer = attackCooldown; // Resetear el temporizador
+            attackTimer = attackCooldown;
             return;
         }
 
         direction.Normalize();
-
         monsterController.inputMove = new Vector2(direction.x, 0);
         monsterController.inputMoveModifier = true;
-
         pixelMonster.Facing = direction.x > 0 ? 1 : -1;
     }
 
     private void AttackBehavior()
     {
-        if (player == null)
+        if (player == null || playerHealth.character.IsDead)
         {
             currentState = EnemyState.Patrolling;
             return;
@@ -184,40 +177,28 @@ public class EnemyAI : MonoBehaviour
         Vector2 direction = player.position - transform.position;
         float distance = direction.magnitude;
 
-        // Volver a perseguir si el jugador se aleja suficiente
-        if (distance > attackRange * 1.2f) // Reducido el multiplicador de 1.5 a 1.2
+        if (distance > attackRange * 1.2f)
         {
             currentState = EnemyState.Chasing;
             return;
         }
 
-        // Detener movimiento mientras ataca
         monsterController.inputMove = Vector2.zero;
-
-        // Mirar siempre al jugador
         pixelMonster.Facing = direction.x > 0 ? 1 : -1;
 
-        // Solo atacar si el cooldown ha terminado
         if (attackTimer <= 0)
         {
             monsterController.Attack(true);
             attackTimer = attackCooldown;
 
-            // Aplicar daño si está en rango
             if (distance <= attackRange)
             {
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    Vector2 hitDirection = (player.position - transform.position).normalized;
-                    playerHealth.TakeDamage(attackDamage, hitDirection);
+                playerHealth.TakeDamage(attackDamage, direction.normalized);
 
-                    // Empujar al jugador
-                    Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-                    if (playerRb != null)
-                    {
-                        playerRb.AddForce(hitDirection * attackPushForce, ForceMode2D.Impulse);
-                    }
+                Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+                if (playerRb != null)
+                {
+                    playerRb.AddForce(direction.normalized * attackPushForce, ForceMode2D.Impulse);
                 }
             }
         }
@@ -225,19 +206,17 @@ public class EnemyAI : MonoBehaviour
 
     private void CheckForPlayer()
     {
-        if (player == null) return;
+        if (player == null || playerHealth.character.IsDead) return;
 
         Vector2 directionToPlayer = player.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
-        // Si está en rango de ataque, cambia directamente al estado de ataque
         if (distanceToPlayer <= attackRange)
         {
             currentState = EnemyState.Attacking;
             return;
         }
 
-        // Si está en rango de detección pero fuera del rango de ataque, sigue persiguiendo
         if (distanceToPlayer <= detectionRange)
         {
             RaycastHit2D hit = Physics2D.Raycast(
@@ -258,44 +237,6 @@ public class EnemyAI : MonoBehaviour
         else if (currentState == EnemyState.Chasing)
         {
             currentState = EnemyState.Patrolling;
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-
-        if (patrolPoints != null && patrolPoints.Length > 1)
-        {
-            Gizmos.color = Color.blue;
-            for (int i = 0; i < patrolPoints.Length; i++)
-            {
-                if (patrolPoints[i] != null)
-                {
-                    Gizmos.DrawSphere(patrolPoints[i].position, 0.2f);
-                    if (i < patrolPoints.Length - 1 && patrolPoints[i + 1] != null)
-                    {
-                        Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[i + 1].position);
-                    }
-                    else if (patrolPoints[0] != null)
-                    {
-                        Gizmos.DrawLine(patrolPoints[i].position, patrolPoints[0].position);
-                    }
-                }
-            }
-        }
-
-        // Dibujar el área de detección de suelo
-        if (enemyCollider != null)
-        {
-            Gizmos.color = isGrounded ? Color.green : Color.red;
-            Vector2 boxSize = new Vector2(enemyCollider.bounds.size.x * 0.9f, 0.1f);
-            Vector2 boxCenter = new Vector2(enemyCollider.bounds.center.x, enemyCollider.bounds.min.y);
-            Gizmos.DrawWireCube(boxCenter, boxSize);
         }
     }
 }

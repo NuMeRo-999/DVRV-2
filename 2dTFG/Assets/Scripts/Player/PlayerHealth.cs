@@ -26,6 +26,11 @@ public class PlayerHealth : MonoBehaviour
         {
             invulnerabilityTimer -= Time.deltaTime;
         }
+
+        if (character.IsDead)
+        {
+            GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        }
     }
 
     public void TakeDamage(int damage, Vector2 hitDirection)

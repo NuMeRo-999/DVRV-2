@@ -46,16 +46,8 @@ public class EnemyHealth : MonoBehaviour
         monsterController.IsDead = true;
         pixelMonster.IsDead = true;
         
-        // Asegurarse que la capa está entre 0-31
-        if (invulnerableLayer.value >= 0 && invulnerableLayer.value <= 31)
-        {
-            gameObject.layer = invulnerableLayer;
-        }
-        else
-        {
-            Debug.LogError("Invalid layer for invulnerableLayer!");
-            gameObject.layer = 0; // Capa por defecto
-        }
+        GetComponent<Rigidbody2D>().gravityScale = 0;
+        GetComponent<BoxCollider2D>().enabled = false;
         
         monsterController.enabled = false;
     }
