@@ -10,32 +10,31 @@ public class WeaponAttack : MonoBehaviour
     public float attackRadius = 0.8f;
 
     [Header("Referencias")]
-    public Animator animator;
+    // public Animator animator;
     private float lastAttackTime;
-    private bool isAttacking = false;
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0) && Time.time > lastAttackTime + attackCooldown)
         {
+
             StartAttack();
         }
     }
 
     private void StartAttack()
     {
-        isAttacking = true;
         lastAttackTime = Time.time;
-        animator.SetTrigger("Attack");
-        Invoke("DoDamage", 0.2f); // Pequeño delay para sincronizar con animación
+        DoDamage();
+        // animator.SetTrigger("Attack");
     }
 
-    private void DoDamage()
+    // Llama a este método desde el evento de la animación en el momento exacto del impacto
+    public void DoDamage()
     {
-        if (!isAttacking) return;
-
         Vector2 attackPos = (Vector2)transform.position + attackOffset * transform.localScale.x;
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPos, attackRadius, enemyLayer);
+        print(hitEnemies.Length);
 
         foreach (Collider2D enemy in hitEnemies)
         {
@@ -45,8 +44,6 @@ public class WeaponAttack : MonoBehaviour
                 enemyHealth.TakeDamage(damage, hitDirection);
             }
         }
-        
-        isAttacking = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -56,4 +53,4 @@ public class WeaponAttack : MonoBehaviour
         Vector2 attackPos = (Vector2)transform.position + attackOffset * transform.localScale.x;
         Gizmos.DrawWireSphere(attackPos, attackRadius);
     }
-}   
+}

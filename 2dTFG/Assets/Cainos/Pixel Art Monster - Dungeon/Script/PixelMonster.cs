@@ -32,7 +32,7 @@ namespace Cainos.PixelArtMonster_Dungeon
                 if (value == 0) return;
                 facing = value;
 
-                animator.transform.localScale = new Vector3(1.0f, 1.0f, facing);
+                animator.transform.localScale = new Vector3(1.0f, 1.0f, -facing);
 
                 //Vector3 pos = animator.transform.localPosition;
                 //pos.x = 0.064f * -facing;

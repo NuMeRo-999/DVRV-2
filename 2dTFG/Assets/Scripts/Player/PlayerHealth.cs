@@ -55,6 +55,7 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         character.IsDead = true;
+        GetComponent<PixelCharacterController>().enabled = false;
         // Aquí puedes añadir más lógica: Game Over, respawn, etc.
     }
 

@@ -33,7 +33,7 @@ public class EnemyAI : MonoBehaviour
     private float attackTimer = 0f;
     private bool isWaiting = false;
     private Rigidbody2D rb;
-    private Collider2D enemyCollider;
+    private BoxCollider2D enemyCollider;
 
     public enum EnemyState { Patrolling, Chasing, Attacking }
 
@@ -42,7 +42,7 @@ public class EnemyAI : MonoBehaviour
         monsterController = GetComponent<MonsterController>();
         pixelMonster = GetComponent<PixelMonster>();
         rb = GetComponent<Rigidbody2D>();
-        enemyCollider = GetComponent<Collider2D>();
+        enemyCollider = GetComponent<BoxCollider2D>();
     }
 
     private void Start()
@@ -52,7 +52,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
-        if (pixelMonster.IsDead) 
+        if (pixelMonster.IsDead)
         {
             monsterController.inputMove = Vector2.zero;
             return;
@@ -86,7 +86,7 @@ public class EnemyAI : MonoBehaviour
         // Crear un pequeño boxcast debajo del enemigo para detectar suelo
         Vector2 boxSize = new Vector2(enemyCollider.bounds.size.x * 0.9f, 0.1f);
         Vector2 boxCenter = new Vector2(enemyCollider.bounds.center.x, enemyCollider.bounds.min.y);
-        
+
         RaycastHit2D hit = Physics2D.BoxCast(
             boxCenter,
             boxSize,
@@ -101,28 +101,31 @@ public class EnemyAI : MonoBehaviour
 
     private void PatrolBehavior()
     {
-        print("isGrounded: " + isGrounded);
-        print("patrolPoints.Length: " + patrolPoints.Length);
-        if (patrolPoints.Length == 0 || !isGrounded) 
+        // Verificar si hay puntos de patrulla
+        if (patrolPoints.Length == 0 || !isGrounded)
         {
             monsterController.inputMove = Vector2.zero;
             return;
         }
-        print("llega");
+
+        // Manejar el tiempo de espera en cada punto
         if (isWaiting)
         {
             monsterController.inputMove = Vector2.zero;
             waitTimer += Time.deltaTime;
-            
+
             if (waitTimer >= waitTimeAtPoint)
             {
                 isWaiting = false;
                 waitTimer = 0f;
+
+                // Avanzar al siguiente punto (con bucle circular)
                 currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
             }
             return;
         }
 
+        // Calcular dirección y distancia al punto actual
         Vector2 direction = patrolPoints[currentPatrolIndex].position - transform.position;
         float distance = direction.magnitude;
 
@@ -133,17 +136,18 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        // Normalizar dirección y mover al enemigo
         direction.Normalize();
         monsterController.inputMove = new Vector2(direction.x, 0);
-        monsterController.inputMoveModifier = false;
+        monsterController.inputMoveModifier = false; // Usar velocidad de patrulla
 
-        print(direction.x);
-        pixelMonster.Facing = direction.x > 0 ? -1 : 1;
+        // Establecer dirección de mirada
+        pixelMonster.Facing = direction.x > 0 ? 1 : -1;
     }
 
     private void ChaseBehavior()
     {
-        if (player == null) 
+        if (player == null)
         {
             currentState = EnemyState.Patrolling;
             return;
@@ -152,49 +156,55 @@ public class EnemyAI : MonoBehaviour
         Vector2 direction = player.position - transform.position;
         float distance = direction.magnitude;
 
+        // Cambiado a <= attackRange para asegurar la transición
         if (distance <= attackRange)
         {
             currentState = EnemyState.Attacking;
             monsterController.inputMove = Vector2.zero;
+            attackTimer = attackCooldown; // Resetear el temporizador
             return;
         }
 
         direction.Normalize();
-        
-        // Solo moverse en el eje X
+
         monsterController.inputMove = new Vector2(direction.x, 0);
         monsterController.inputMoveModifier = true;
 
-
-        pixelMonster.Facing = direction.x > 0 ? -1 : 1;
+        pixelMonster.Facing = direction.x > 0 ? 1 : -1;
     }
 
     private void AttackBehavior()
     {
-        if (player == null) 
+        if (player == null)
         {
             currentState = EnemyState.Patrolling;
             return;
         }
 
         Vector2 direction = player.position - transform.position;
-        pixelMonster.Facing = direction.x > 0 ? -1 : 1;
-
         float distance = direction.magnitude;
-        if (distance > attackRange * 1.5f)
+
+        // Volver a perseguir si el jugador se aleja suficiente
+        if (distance > attackRange * 1.2f) // Reducido el multiplicador de 1.5 a 1.2
         {
             currentState = EnemyState.Chasing;
             return;
         }
 
+        // Detener movimiento mientras ataca
         monsterController.inputMove = Vector2.zero;
 
+        // Mirar siempre al jugador
+        pixelMonster.Facing = direction.x > 0 ? 1 : -1;
+
+        // Solo atacar si el cooldown ha terminado
         if (attackTimer <= 0)
         {
             monsterController.Attack(true);
             attackTimer = attackCooldown;
 
-            if (distance <= attackRange * 1.2f)
+            // Aplicar daño si está en rango
+            if (distance <= attackRange)
             {
                 PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
@@ -202,6 +212,7 @@ public class EnemyAI : MonoBehaviour
                     Vector2 hitDirection = (player.position - transform.position).normalized;
                     playerHealth.TakeDamage(attackDamage, hitDirection);
 
+                    // Empujar al jugador
                     Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
                     if (playerRb != null)
                     {
@@ -219,12 +230,20 @@ public class EnemyAI : MonoBehaviour
         Vector2 directionToPlayer = player.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
+        // Si está en rango de ataque, cambia directamente al estado de ataque
+        if (distanceToPlayer <= attackRange)
+        {
+            currentState = EnemyState.Attacking;
+            return;
+        }
+
+        // Si está en rango de detección pero fuera del rango de ataque, sigue persiguiendo
         if (distanceToPlayer <= detectionRange)
         {
             RaycastHit2D hit = Physics2D.Raycast(
-                transform.position, 
-                directionToPlayer.normalized, 
-                detectionRange, 
+                transform.position,
+                directionToPlayer.normalized,
+                detectionRange,
                 playerLayer);
 
             if (hit.collider != null && hit.collider.CompareTag("Player"))
