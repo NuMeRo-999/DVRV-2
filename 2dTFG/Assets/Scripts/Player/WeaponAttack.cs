@@ -34,7 +34,6 @@ public class WeaponAttack : MonoBehaviour
     {
         Vector2 attackPos = (Vector2)transform.position + attackOffset * transform.localScale.x;
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPos, attackRadius, enemyLayer);
-        print(hitEnemies.Length);
 
         foreach (Collider2D enemy in hitEnemies)
         {
