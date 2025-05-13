@@ -145,11 +145,11 @@ MonoBehaviour:
     - title: Entry 1 State
       value: active
       type: 0
-      typeString: 
+      typeString: CustomFieldType_QuestState
     - title: Entry 1
       value: '[var=Crates.NumCollected]/3 Collected'
       type: 0
-      typeString: 
+      typeString: CustomFieldType_Text
   locations: []
   variables:
   - id: 1
