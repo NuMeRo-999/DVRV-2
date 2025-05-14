@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public int totalRounds = 10;
     public int currentRound = 1;
     public int score = 0;
+    public TextMeshProUGUI scoreText;
 
     public GameObject pinPrefab;
     public GameObject ballsPrefab;
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        scoreText.text = score.ToString();
         if (roundInProgress && AllPinsDown())
         {
             roundInProgress = false;
@@ -84,7 +87,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         int fallenThisRound = pinCounter.fallenPins;
-        UpdateScore(fallenThisRound);
+        // UpdateScore(fallenThisRound);
         pinCounter.fallenPins = 0;
 
         attemptsInCurrentRound++;
