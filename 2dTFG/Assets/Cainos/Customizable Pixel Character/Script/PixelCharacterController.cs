@@ -966,7 +966,7 @@ namespace Cainos.CustomizablePixelCharacter
             get { return isRunning; }
         }
 
-
+        public void setMovingFalse() { isMoving = false; }
         private bool isMoving;                                      // is the character moving
         private bool isRunning;                                     // is the character running
         private Vector2 velocity;                                   // current velocity

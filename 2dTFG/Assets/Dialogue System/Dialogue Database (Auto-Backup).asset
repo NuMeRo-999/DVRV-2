@@ -527,7 +527,7 @@ MonoBehaviour:
       conditionPriority: 2
       outgoingLinks: []
       conditionsString: 
-      userScript: 
+      userScript: ' AddPoints(3,30)'
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -592,7 +592,7 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 291.39264, y: 0}
+    canvasScrollPosition: {x: 83.34668, y: 0}
     canvasZoom: 0.87000006
   - id: 2
     fields:
