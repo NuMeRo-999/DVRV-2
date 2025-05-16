@@ -13,18 +13,20 @@ namespace Cainos.CustomizablePixelCharacter
 
         private Vector3 targetPos;
 
+        public GameObject player;
+
         private void Start()
         {
-            if (PixelCharacter.instance == null) return;
+            if (player == null) return;
 
-            offset = transform.position - PixelCharacter.instance.transform.position;
+            offset = transform.position - player.transform.position;
         }
 
         private void Update()
         {
-            if (PixelCharacter.instance == null) return;
+            if (player == null) return;
 
-            targetPos = PixelCharacter.instance.transform.position + offset;
+            targetPos = player.transform.position + offset;
             transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
         }
 
