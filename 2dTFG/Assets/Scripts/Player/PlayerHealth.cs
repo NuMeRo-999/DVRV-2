@@ -1,5 +1,6 @@
 using Cainos.CustomizablePixelCharacter;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -7,10 +8,12 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
     public float invulnerabilityTime = 1f;        // Tiempo de invulnerabilidad después de recibir daño
+    public float deathRestartDelay = 2f;          // Tiempo de espera antes de reiniciar la escena
 
     [Header("Referencias")]
     public PixelCharacter character;             // Referencia al script PixelCharacter
     private float invulnerabilityTimer;          // Temporizador de invulnerabilidad
+    private float deathTimer = -1f;              // Temporizador para reiniciar la escena
 
     private void Start()
     {
@@ -30,6 +33,15 @@ public class PlayerHealth : MonoBehaviour
         if (character.IsDead)
         {
             GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+
+            if (deathTimer > 0)
+            {
+                deathTimer -= Time.deltaTime;
+                if (deathTimer <= 0)
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
+            }
         }
     }
 
@@ -61,12 +73,24 @@ public class PlayerHealth : MonoBehaviour
     {
         character.IsDead = true;
         GetComponent<PixelCharacterController>().enabled = false;
-        // Aquí puedes añadir más lógica: Game Over, respawn, etc.
+        deathTimer = deathRestartDelay;
     }
 
-    // Método para curar al jugador
-    public void Heal(int amount)
+    public void Heal(float percentage)
     {
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        // Convertir el porcentaje a un valor entre 0 y 1
+        float normalizedPercentage = percentage / 100f;
+
+        // Calcular la cantidad de vida a curar
+        int healAmount = Mathf.CeilToInt(maxHealth * normalizedPercentage);
+
+        // Aplicar la curación
+        currentHealth += healAmount;
+
+        // Limitar la vida al máximo permitido
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
     }
 }

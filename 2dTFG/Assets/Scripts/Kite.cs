@@ -14,7 +14,7 @@ public class Kite : MonoBehaviour
         print(other.tag);
         if (other.tag == "Player")
         {
-            pointsManager.AddPoints(3, 0);
+            // pointsManager.AddPoints(3, 0, 0);
             Destroy(gameObject);
         }
     }

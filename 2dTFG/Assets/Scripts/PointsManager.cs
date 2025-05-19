@@ -4,23 +4,35 @@ using TMPro;
 
 public class PointsManager : MonoBehaviour
 {
-    public int points = 0;
+    public int lovePoints = 0;
+    public int equityPoints = 0;
     public float timer = 0f;
     public bool isTimerRunning = true;
     
     [Header("UI Elements")]
     public TextMeshProUGUI pointsText;
     public TextMeshProUGUI timerText;
+    public TextMeshProUGUI playerHealthText;
+
+    public Anciano anciano;
+    public PlayerHealth playerHealth;
+    public Boss boss;
 
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        points = DialogueLua.GetVariable("Points").AsInt;
+        anciano = FindAnyObjectByType<Anciano>();
+        lovePoints = DialogueLua.GetVariable("lovePoints").AsInt;
+        equityPoints = DialogueLua.GetVariable("equityPoints").AsInt;
         timer = DialogueLua.GetVariable("Timer").AsFloat;
     }
 
     void Update()
     {
+
+        playerHealth = FindAnyObjectByType<PlayerHealth>();
+        boss = FindAnyObjectByType<Boss>();
+        
         // Actualizar temporizador si está activo
         if (isTimerRunning)
         {
@@ -29,26 +41,51 @@ public class PointsManager : MonoBehaviour
         }
 
         // Sincronizar puntos si cambian externamente
-        int currentPoints = DialogueLua.GetVariable("Points").AsInt;
-        if (points != currentPoints)
+        int currentLovePoints = DialogueLua.GetVariable("lovePoints").AsInt;
+        int currentEquityPoints = DialogueLua.GetVariable("equityPoints").AsInt;
+
+        if (currentLovePoints != lovePoints || currentEquityPoints != equityPoints)
         {
-            points = currentPoints;
-            Debug.Log("Points updated from Lua: " + points);
+            lovePoints = currentLovePoints;
+            equityPoints = currentEquityPoints;
+            DialogueLua.SetVariable("lovePoints", lovePoints);
+            DialogueLua.SetVariable("equityPoints", equityPoints);
+            Debug.Log("Points updated from Lua: " + lovePoints + ", " + equityPoints);
         }
 
         // Actualizar la UI
         UpdateUI();
     }
 
-    public void AddPoints(float pointsToAdd, float secondsToAdd)
+    public void AddPoints(float lovePointsToAdd, float equityPointsToAdd, float secondsToAdd)
     {
-        int roundedPoints = Mathf.RoundToInt(pointsToAdd);
-        points += roundedPoints;
-        DialogueLua.SetVariable("Points", points);
+        int roundedLovePoints = Mathf.RoundToInt(lovePointsToAdd);
+        int roundedEquityPoints = Mathf.RoundToInt(equityPointsToAdd);
+
+        lovePoints += roundedLovePoints;
+        equityPoints += roundedEquityPoints;
+
+        DialogueLua.SetVariable("lovePoints", lovePoints);
+        DialogueLua.SetVariable("equityPoints", equityPoints);
 
         // Añadir segundos al temporizador
         timer += secondsToAdd;
         DialogueLua.SetVariable("Timer", timer);
+    }
+
+    public void Heal(float percentage)
+    {
+        playerHealth.Heal(percentage);
+    }
+
+    public void FollowPlayer()
+    {
+        anciano.followingPlayer = true;
+    }
+
+    public void ActivateBoss()
+    {
+        boss.isActive = true;
     }
 
     public void ResetTimer()
@@ -61,7 +98,10 @@ public class PointsManager : MonoBehaviour
     private void UpdateUI()
     {
         if (pointsText != null)
-            pointsText.text = "Points: " + points;
+            pointsText.text = "Love: " + lovePoints + " | Equity: " + equityPoints;
+
+        if (playerHealthText != null)
+            playerHealthText.text = playerHealth.currentHealth.ToString();
 
         if (timerText != null)
         {
