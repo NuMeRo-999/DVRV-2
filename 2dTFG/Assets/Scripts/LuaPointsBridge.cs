@@ -9,15 +9,10 @@ public class LuaPointsBridge : MonoBehaviour
     void OnEnable()
     {
         if (pointsManager == null)
-        {
             pointsManager = FindAnyObjectByType<PointsManager>();
-        }
 
         if (sceneManager == null)
-        {
             sceneManager = FindAnyObjectByType<SceneManagerDialog>();
-        }
-
 
         Lua.RegisterFunction("AddPoints", pointsManager, typeof(PointsManager).GetMethod("AddPoints"));
         Lua.RegisterFunction("FollowPlayer", pointsManager, typeof(PointsManager).GetMethod("FollowPlayer"));
@@ -25,6 +20,10 @@ public class LuaPointsBridge : MonoBehaviour
         Lua.RegisterFunction("Exit", sceneManager, typeof(SceneManagerDialog).GetMethod("Exit"));
         Lua.RegisterFunction("LoadNextScene", sceneManager, typeof(SceneManagerDialog).GetMethod("LoadNextScene"));
         Lua.RegisterFunction("ActivateBoss", pointsManager, typeof(PointsManager).GetMethod("ActivateBoss"));
+        Lua.RegisterFunction("RestartPlayerAnimator", pointsManager, typeof(PointsManager).GetMethod("RestartPlayerAnimator"));
+
+        Lua.RegisterFunction("ShowWinPanel", pointsManager, typeof(PointsManager).GetMethod("showWinPanel"));
+        
     }
 
     void OnDisable()
@@ -35,5 +34,7 @@ public class LuaPointsBridge : MonoBehaviour
         Lua.UnregisterFunction("Exit");
         Lua.UnregisterFunction("LoadNextScene");
         Lua.UnregisterFunction("ActivateBoss");
+        Lua.UnregisterFunction("ShowWinPanel");
+        Lua.UnregisterFunction("RestartPlayerAnimator");
     }
 }

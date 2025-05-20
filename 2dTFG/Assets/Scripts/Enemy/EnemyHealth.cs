@@ -24,6 +24,15 @@ public class EnemyHealth : MonoBehaviour
             monsterController = GetComponent<MonsterController>();
     }
 
+    private void Update()
+    {
+        if (pixelMonster.IsDead || monsterController.IsDead)
+        {
+            GetComponent<Rigidbody2D>().linearVelocityX = 0;
+            GetComponent<Rigidbody2D>().linearVelocityY = 0;
+        }
+    }
+
     public void TakeDamage(int damage, Vector2 hitDirection)
     {
         if (monsterController.IsDead) return;

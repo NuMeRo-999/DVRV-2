@@ -385,7 +385,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -832,7 +832,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -1104,7 +1104,7 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 198.44498, y: 0}
+    canvasScrollPosition: {x: 106.9642, y: 0}
     canvasZoom: 0.87450063
   - id: 3
     fields:
@@ -1280,7 +1280,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -1824,7 +1824,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -2026,7 +2026,7 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 566.6323
+        x: 570.95667
         y: 202.41899
         width: 160
         height: 30
@@ -2254,7 +2254,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -2659,7 +2659,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -2777,7 +2777,7 @@ MonoBehaviour:
       canvasRect:
         serializedVersion: 2
         x: 294.33966
-        y: 232.20123
+        y: 235.11353
         width: 160
         height: 30
     - id: 4
@@ -3088,9 +3088,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: "Tu hermano est\xE1 atrapado en una jaula protegida por un guardi\xE1n.
-          Puedes intentar liberarlo luchando o encontrar otro modo m\xE1s justo pero
-          m\xE1s lento.\n"
+        value: "Tu hermano est\xE1 atrapado en una jaula protegida por un guardi\xE1n.\n"
         type: 0
         typeString: 
       - title: Sequence
@@ -3396,8 +3394,8 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 22.76535, y: 132.94571}
-    canvasZoom: 0.74674904
+    canvasScrollPosition: {x: 0, y: 0}
+    canvasZoom: 0.68674934
   - id: 8
     fields:
     - title: Title
@@ -4035,7 +4033,7 @@ MonoBehaviour:
         isConnector: 0
         priority: 2
       conditionsString: 
-      userScript: 
+      userScript: RestartPlayerAnimator()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -4140,7 +4138,7 @@ MonoBehaviour:
       conditionPriority: 2
       outgoingLinks: []
       conditionsString: 
-      userScript: 
+      userScript: ShowWinPanel()
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -4151,8 +4149,8 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 35, y: 0}
-    canvasZoom: 1
+    canvasScrollPosition: {x: 45.66898, y: 7.4271736}
+    canvasZoom: 1.06
   syncInfo:
     syncActors: 0
     syncItems: 0

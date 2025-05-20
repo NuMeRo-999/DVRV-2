@@ -1,6 +1,7 @@
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
 using TMPro;
+using System.Collections;
 
 public class PointsManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class PointsManager : MonoBehaviour
     public int equityPoints = 0;
     public float timer = 0f;
     public bool isTimerRunning = true;
-    
+
     [Header("UI Elements")]
     public TextMeshProUGUI pointsText;
     public TextMeshProUGUI timerText;
@@ -17,6 +18,7 @@ public class PointsManager : MonoBehaviour
     public Anciano anciano;
     public PlayerHealth playerHealth;
     public Boss boss;
+    public PointsText pointsTextObj;
 
     void Awake()
     {
@@ -32,7 +34,8 @@ public class PointsManager : MonoBehaviour
 
         playerHealth = FindAnyObjectByType<PlayerHealth>();
         boss = FindAnyObjectByType<Boss>();
-        
+        pointsTextObj = FindAnyObjectByType<PointsText>();
+
         // Actualizar temporizador si está activo
         if (isTimerRunning)
         {
@@ -86,6 +89,25 @@ public class PointsManager : MonoBehaviour
     public void ActivateBoss()
     {
         boss.isActive = true;
+    }
+
+    public void showWinPanel()
+    {
+        pointsTextObj.showWinPanel();
+    }
+
+    public void RestartPlayerAnimator()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            Animator animator = player.GetComponentInChildren<Animator>();
+            if (animator != null)
+            {
+                animator.SetFloat("MoveBlend", 0);
+                animator.SetBool("IsAttacking", false);
+            }
+        }
     }
 
     public void ResetTimer()

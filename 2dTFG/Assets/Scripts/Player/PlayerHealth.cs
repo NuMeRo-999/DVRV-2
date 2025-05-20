@@ -12,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Referencias")]
     public PixelCharacter character;             // Referencia al script PixelCharacter
+    public Transform spawnPoint;                  // Punto de aparición del personaje
     private float invulnerabilityTimer;          // Temporizador de invulnerabilidad
     private float deathTimer = -1f;              // Temporizador para reiniciar la escena
 
@@ -39,7 +40,31 @@ public class PlayerHealth : MonoBehaviour
                 deathTimer -= Time.deltaTime;
                 if (deathTimer <= 0)
                 {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    character.IsDead = false;
+                    deathTimer = -1f;
+                    currentHealth = maxHealth;
+                    transform.position = spawnPoint.position;
+                    GetComponent<PixelCharacterController>().enabled = true;
+
+                    // Buscar el arma dentro del Weapon Slot
+                    Transform weaponSlot = transform.Find("Weapon Slot");
+                    if (weaponSlot != null && weaponSlot.childCount == 0)
+                    {
+                        Transform weapon = GameObject.Find("PF Weapon - Short Sword")?.transform;
+                        if (weapon != null)
+                        {
+                            Rigidbody2D weaponRb = weapon.GetComponent<Rigidbody2D>();
+                            if (weaponRb != null)
+                            {
+                                weaponRb.bodyType = RigidbodyType2D.Kinematic;
+                            }
+                        }
+                        print("arma: " + weapon);
+                        weapon.SetParent(weaponSlot);
+                        weapon.localPosition = Vector3.zero;
+                        weapon.localRotation = Quaternion.identity;
+                        weapon.gameObject.SetActive(true);
+                    }
                 }
             }
         }
