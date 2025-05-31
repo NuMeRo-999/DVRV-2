@@ -1447,6 +1447,9 @@ namespace Cainos.CustomizablePixelCharacter
 
         #region - LADDER - 
 
+        public GameObject indicationPanel;
+        public GameObject indicationPanel2;
+
         // the ladder the character is climbing, if there is;      
         [FoldoutGroup("Runtime"), ShowInInspector, ReadOnly]
         public Ladder Ladder
@@ -1546,6 +1549,8 @@ namespace Cainos.CustomizablePixelCharacter
             {
                 if (velocity.y > 0.0f)
                 {
+                    indicationPanel.SetActive(false);
+                    indicationPanel2.SetActive(true);
                     velocity.y = 0.0f;
                     climbingSpeedMul = 0.0f;
                 }
@@ -2209,6 +2214,7 @@ namespace Cainos.CustomizablePixelCharacter
             if (collision.gameObject.TryGetComponent<Ladder>(out Ladder ladder))
             {
                 if (this.ladder == null) this.ladder = ladder;
+                indicationPanel.SetActive(true);
             }
         }
 
@@ -2220,6 +2226,8 @@ namespace Cainos.CustomizablePixelCharacter
                 {
                     this.ladder = null;
                     isClimbingLadder = false;
+                    indicationPanel.SetActive(false);
+                    indicationPanel2.SetActive(false);
                 }
             }
         }

@@ -337,9 +337,9 @@ MonoBehaviour:
         type: 0
         typeString: CustomFieldType_Text
       - title: Dialogue Text
-        value: "Ah, viajero\u2026 he caminado m\xE1s de lo que deb\xEDa, y el sol
-          me ha vencido. Mi bast\xF3n se rompi\xF3\u2026 \xBFpodr\xEDas ayudarme
-          a llegar hasta la sombra del gran roble, all\xE1 adelante?"
+        value: "Ah, nieto\u2026 he caminado m\xE1s de lo que deb\xEDa, y el sol me
+          ha vencido. Mi bast\xF3n se rompi\xF3\u2026 \xBFpodr\xEDas ayudarme a llegar
+          hasta la sombra del gran roble, all\xE1 adelante?"
         type: 0
         typeString: CustomFieldType_Text
       - title: Sequence
@@ -418,7 +418,7 @@ MonoBehaviour:
         type: 0
         typeString: CustomFieldType_Text
       - title: Dialogue Text
-        value: "Aqu\xED tiene una hoja ancha para cubrirse, pero debo irme."
+        value: "Aqu\xED tienes una hoja ancha para cubrirse, pero debo irme."
         type: 0
         typeString: CustomFieldType_Text
       - title: Sequence
@@ -471,7 +471,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: "Le dejo un poco de agua. Llegar\xE1 si descansa."
+        value: Te dejo un poco de agua. Llegaras si descansas.
         type: 0
         typeString: 
       - title: Sequence
@@ -524,7 +524,7 @@ MonoBehaviour:
         type: 0
         typeString: CustomFieldType_Text
       - title: Dialogue Text
-        value: "D\xE9jeme ayudarle a caminar hasta all\xED."
+        value: "D\xE9jame ayudarte a caminar hasta all\xED."
         type: 0
         typeString: CustomFieldType_Text
       - title: Sequence
@@ -626,8 +626,8 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: "Lo acompa\xF1o al roble\u2026 y me quedo un rato para asegurarme
-          de que est\xE9 bien."
+        value: "Te acompa\xF1o al roble\u2026 y me quedo un rato para asegurarme
+          de que estas bien."
         type: 0
         typeString: 
       - title: Sequence
@@ -784,9 +784,9 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: "Una voz canta entre los \xE1rboles. No puedes ver a la persona, pero
-          la tristeza en la melod\xEDa te atraviesa. No hay palabras, solo emoci\xF3n.
-          No hay atajos. Solo t\xFA decides si quedarte o seguir."
+        value: "Una voz muy familiar canta entre los\_\xE1rboles. No puedes ver a
+          la persona, pero la tristeza en la melod\xEDa te atraviesa. No hay palabras,
+          solo emoci\xF3n. No hay atajos. Solo t\xFA decides si quedarte o seguir."
         type: 0
         typeString: 
       - title: Sequence
@@ -1104,8 +1104,8 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 106.9642, y: 0}
-    canvasZoom: 0.87450063
+    canvasScrollPosition: {x: 96.928986, y: 15.830994}
+    canvasZoom: 0.8380008
   - id: 3
     fields:
     - title: Title
